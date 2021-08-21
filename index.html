@@ -20,6 +20,10 @@
         0.1,
         1000
       )
+      camera.position.z = 5
+      // camera.position.x = 2
+      // camera.near = 0
+
       const renderer = new THREE.WebGLRenderer({ antialias: true })
       renderer.setClearColor('#e5e5e5')
       renderer.setSize(window.innerWidth, window.innerHeight)
@@ -29,10 +33,34 @@
       window.addEventListener('resize', () => {
         renderer.setSize(window.innerWidth, window.innerHeight)
         camera.aspect = window.innerWidth / window.innerHeight
-        camera.updateProjectMatrix()
+        camera.updateProjectionMatrix()
       })
 
-      renderer.render(scene, camera)
+      window.addEventListener('wheel', (e) => {
+        const zoom = e.deltaY * 0.005
+        camera.position.z += zoom
+        renderer.render(scene, camera)
+      })
+
+      const geometry = new THREE.BoxGeometry(1, 1, 1)
+      const material = new THREE.MeshLambertMaterial({ color: 0x00ccff })
+      const mesh = new THREE.Mesh(geometry, material)
+
+      scene.add(mesh)
+
+      const light = new THREE.PointLight(0xffffff, 1, 500)
+      light.position.set(10, 0, 25)
+      scene.add(light)
+
+      const render = () => {
+        requestAnimationFrame(render)
+        mesh.rotation.x += 0.01
+        mesh.rotation.y += 0.01
+        mesh.rotation.z += 0.005
+        renderer.render(scene, camera)
+      }
+
+      render()
     </script>
   </body>
 </html>
